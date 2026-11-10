@@ -50,8 +50,12 @@ class ToDoList:
                 added_count = 0
                 total_rows = 0
                 
+                skipped_rows = 0
                 for row in reader:
                     total_rows += 1
+                    if len(row) < 3:
+                        skipped_rows += 1
+                        continue
                     if row[0] not in existing_names:
                         self.tasks.append(Task(row[0], row[1], row[2]))
                         existing_names.append(row[0])
@@ -63,6 +67,9 @@ class ToDoList:
                     print(f"No new tasks were added (all {total_rows} task(s) already exist).")
                 else:
                     print(f"Successfully loaded {added_count} new task(s) from {total_rows} total task(s).")
+
+                if skipped_rows:
+                    print(f"Skipped {skipped_rows} malformed row(s).")
                     
         except FileNotFoundError:
             print("Historical data file not found.")
